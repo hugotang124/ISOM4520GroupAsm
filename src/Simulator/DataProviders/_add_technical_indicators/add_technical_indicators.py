@@ -30,6 +30,12 @@ def add_technical_indicators(df, interval = None, **params):
 
     technical_indicators = {
         'ATR': 14,
+        # some other indicators:
+        'RSI': 14,
+        'SMA': 20,
+        'EMA': 20,
+        'BollingerBands': 20,
+        'ADX': 14,
     }
 
     suffix = "" if interval is None else f"_{interval}"
@@ -43,7 +49,39 @@ def add_technical_indicators(df, interval = None, **params):
                 continue
             atr = ta.atr(df['High'], df['Low'], df['Close'], length=period)
             df[f'stat_ATR{suffix}'] = atr.shift()
+        
+        elif indicator == 'RSI':
+            if f'stat_RSI{suffix}' in df.columns:
+                continue
+            rsi = ta.rsi(df['Close'], length=period)
+            df[f'stat_RSI{suffix}'] = rsi.shift()
 
+        elif indicator == 'SMA':
+            if f'stat_SMA{suffix}' in df.columns:
+                continue
+            sma = ta.sma(df['Close'], length=period)
+            df[f'stat_SMA{suffix}'] = sma.shift()
+
+        elif indicator == 'EMA':
+            if f'stat_EMA{suffix}' in df.columns:
+                continue
+            ema = ta.ema(df['Close'], length=period)
+            df[f'stat_EMA{suffix}'] = ema.shift()
+        
+        elif indicator == 'BollingerBands':
+            if f'stat_BollingerBands{suffix}_lower' in df.columns:
+                continue
+            bb = ta.bbands(df['Close'], length=period)
+            df[f'stat_BollingerBands{suffix}_lower'] = bb['BBL_20_2.0'].shift()
+            df[f'stat_BollingerBands{suffix}_upper'] = bb['BBU_20_2.0'].shift()
+
+        elif indicator == 'ADX':
+            if f'stat_ADX{suffix}' in df.columns:
+                continue
+            adx = ta.adx(df['High'], df['Low'], df['Close'], length=period)
+            df[f'stat_ADX{suffix}'] = adx.iloc[:,0].shift()
+            df[f'stat_DMP{suffix}'] = adx.iloc[:,1].shift()
+            df[f'stat_DMN{suffix}'] = adx.iloc[:,2].shift()
     """
     PerformanceWarning: DataFrame is highly fragmented. 
     This is usually the result of calling `frame.insert` many times,

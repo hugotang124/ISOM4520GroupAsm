@@ -93,6 +93,31 @@ def conduct_univariate_multivariate_hyp_testing(df, **params):
     df = pd.DataFrame.from_dict(holder, orient='index', columns=['p_value'])
     print (df)
 
+    # conduct multivariate hypothesis testing
+    # long trade first
+    trade_cols = list(filter(lambda x: x.startswith("stat"), long_trades.columns)) + ["PNL_ratio"]
+    df_tmp = long_trades[trade_cols].copy()
+    df_tmp.dropna(inplace=True, axis=0)
+    X = df_tmp[trade_cols[:-1]]
+    Y = df_tmp['PnL_ratio']
+    X = sm.add_constant(X)
+
+    model = sm.OLS(Y, X).fit()
+    print('Long Trades Multivariate Hypothesis Testing:')
+    print (model.summary())
+
+    # short trade
+    df_tmp = short_trades[trade_cols].copy()
+    df_tmp.dropna(inplace=True, axis=0)
+    X = df_tmp[trade_cols[:-1]]
+    Y = df_tmp['PnL_ratio']
+    X = sm.add_constant(X)
+
+    model = sm.OLS(Y, X).fit()
+    print('Short Trades Multivariate Hypothesis Testing:')
+    print (model.summary())
+
+
     # Regress PnL vs stat_Vola(22)_1d
     df_tmp = short_trades[['stat_Vola(22)_1d', 'PnL_ratio']].copy()
     df_tmp.dropna(inplace=True, axis=0)

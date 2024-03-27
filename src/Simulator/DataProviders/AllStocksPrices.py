@@ -82,6 +82,9 @@ class AllStocksPrices:
                 'market_index': self.market_index
             }
         
+        else:
+            macro_and_other_data = {}
+        
         # Get all the symbols for the market
         symbols = get_all_symbols(**self.__dict__)
         

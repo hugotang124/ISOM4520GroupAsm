@@ -1,20 +1,20 @@
 
 def get_params(
-        years_to_consider = 5,
-        n_symbols = 5,
+        years_to_consider = 10,
+        n_symbols = 50,
         market = "US",
         slippage_rate = 0.00025,
 
         # Strategy params
-        strategy_name = "random", # random, buy_and_hold
+        strategy_name = "supertrend", # random, buy_and_hold
 
         # STOP LOSS
-        stop_loss_percentage = 3,
+        stop_loss_percentage = 6,
         risk_level_percentage = 0.5,
         should_stop_loss = True,
 
         # TAKE PROFIT
-        take_profit_percentage = 3,
+        take_profit_percentage = 4,
         should_take_profit = True,
 
         # Intraday trading params
@@ -22,8 +22,8 @@ def get_params(
         should_close_at_signal = False,
         
         # run_alpha_params
-        should_limit_one_position_in_run_alpha = True,
-        run_parallel = False,
+        should_limit_one_position_in_run_alpha = False,
+        run_parallel = True,
         
         # Reporting params
         reporting_period = "Year",
