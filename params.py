@@ -19,11 +19,11 @@ def get_params(
 
         # Intraday trading params
         should_close_at_end_of_candle = False,
-        should_close_at_signal = False,
+        should_close_at_signal = True,
         
         # run_alpha_params
         should_limit_one_position_in_run_alpha = False,
-        run_parallel = True,
+        run_parallel = False,
         
         # Reporting params
         reporting_period = "Year",

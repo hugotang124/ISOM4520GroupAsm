@@ -1,6 +1,8 @@
 import pandas_ta as ta
 import numpy as np
 import pandas as pd
+from scipy.stats import linregress
+from hurst import compute_Hc
 
 
 def add_SuperTrend_signal(df_in, **params):
@@ -39,15 +41,23 @@ def add_SuperTrend_signal(df_in, **params):
 
 
     df = df_in.copy()
+
+    hurst_time_lag = 25
+    H = lambda x: compute_Hc(x, max_window = hurst_time_lag)[0]
+
+    momentum_scanner = 0.5
+    df["hurst_exponent"] = df.Close.rolling(100).apply(H)
+
     supertrend = ta.supertrend(df.High, df.Low, df.Close, period, multiplier)[selected_columns]
-    df[supertrend.columns] = supertrend.values
+    df[supertrend.columns] = supertrend.values∂
     df["SUPERT_PREV"] = df[SUPERTREND_VAL_KEY].shift(1)
     df["Close_PREV"] = df.Close.shift(1)
-    conditions = [(df["SUPERT_PREV"] > df["Close_PREV"]) & (df[SUPERTREND_VAL_KEY] < df["Close"]), \
-                  (df["SUPERT_PREV"] < df["Close_PREV"]) & (df[SUPERTREND_VAL_KEY] > df["Close"])]
+    conditions = [(df["SUPERT_PREV"] > df["Close_PREV"]) & (df[SUPERTREND_VAL_KEY] < df["Close"]) & (df.hurst_exponent > momentum_scanner), \
+                  (df["SUPERT_PREV"] < df["Close_PREV"]) & (df[SUPERTREND_VAL_KEY] > df["Close"]) & (df.hurst_exponent > momentum_scanner)]
     signals = [1, -1]
     df["signal"] = np.select(conditions, signals, default = 0)
     df["trade_opening_price"] = df.Open * (1 + df.signal * slippage_rate)
+    df.to_csv("~/Desktop/target.csv", index = True)
     
     required_cols = list(filter(lambda x: not x.endswith("PREV") and not x in supertrend.columns, df.columns))
     

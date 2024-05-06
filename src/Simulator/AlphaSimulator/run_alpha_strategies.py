@@ -574,8 +574,8 @@ def _get_next_event(
         if len(filtered_df_for_close_signal) > 0:
             events.append(('hitting_close_signal', filtered_df_for_close_signal.index[0], priorities_of_events['hitting_close_signal']))
 
-    elif should_close_at_signal and trade.trade_direction == LONG:
-        filtered_df_for_close_signal = df[df['close_short_signal'] == 1]
+    elif should_close_at_signal and trade.trade_direction == SHORT:
+        filtered_df_for_close_signal = df[df['close_short_signal'] == -1]
 
         if len(filtered_df_for_close_signal) > 0:
             events.append(('hitting_close_signal', filtered_df_for_close_signal.index[0], priorities_of_events['hitting_close_signal']))
